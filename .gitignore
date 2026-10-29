@@ -1,0 +1,22 @@
+# Build output
+build/
+*.app
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode / SwiftPM
+.build/
+.swiftpm/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+
+# Logs
+*.log
+
+# Editors
+.vscode/
+.idea/
