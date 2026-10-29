@@ -42,6 +42,23 @@ is a short physical hold rather than a click**. You keep the normal quit path
 (including the app's own save prompts), you get a visible warning before
 anything closes, and every unprotected app behaves exactly as before.
 
+## Goals
+
+I built this as a learning project with a practical constraint: I wanted a tool
+I would actually keep running, not a demo.
+
+- **Ship end to end.** Menu-bar lifecycle, settings UI, permission handling,
+  login item, packaging, and documentation — the parts that separate a
+  prototype from something installable.
+- **Understand a system-level macOS feature.** Event taps, TCC, synthetic
+  events, and code signing are usually hidden behind frameworks. I wanted to
+  know how they behave, including when they fail.
+- **Practice security-minded design.** Input monitoring is a sensitive
+  capability. The app narrows it to one shortcut for an explicit whitelist,
+  never records keystrokes, and contains no networking code.
+- **Build something I can explain end to end.** Design decisions, tradeoffs,
+  failure modes, and verification — not just a working binary.
+
 ## What it does
 
 - **Hold ⌘Q in a protected app** → HUD appears, bar fills over the hold time,
@@ -241,6 +258,43 @@ Shows the Settings window for a few seconds and exits.
   signature verifies with `codesign --verify --deep --strict`.
 - `--demo` and `--settings-demo` run without Accessibility or Input Monitoring
   grants.
+
+## What I learned
+
+- **Event taps are a pipeline, not a callback.** The tap sees key events before
+  the focused app. Returning `nil` swallows an event; returning it passes it
+  through. Tap placement, event ordering, and re-enabling after a timeout all
+  change the behaviour.
+- **TCC is two independent gates.** Accessibility allows modifying events;
+  Input Monitoring allows observing them. "One granted, one missing" is a real
+  state the app has to handle, not an edge case.
+- **Input handling is a state machine.** Key repeats, Command release, focus
+  changes, and a commit delay all interact. Explicit phases made the behaviour
+  predictable and reviewable.
+- **Synthetic input needs provenance.** Re-posting ⌘Q would be caught by my own
+  tap. Tagging the synthetic event and filtering on the tag breaks the loop
+  without weakening the filter.
+- **Verify identity at the last moment.** Focus can change during a hold, so
+  the app re-checks the frontmost PID immediately before quitting. Never act on
+  stale UI state.
+- **Permissions are product design.** Explaining why each grant is needed,
+  linking to the exact settings pane, and degrading safely matters as much as
+  the code that uses the permission.
+- **App identity is part of the build.** Ad-hoc signing changes identity on
+  every rebuild, which resets TCC grants. That has to be documented, not
+  discovered by users.
+
+Taken together, this was practice in the kind of work I want to do in IT:
+configuring per-app policy, handling sensitive OS permissions, debugging across
+process boundaries, and documenting a reproducible setup.
+
+## Next steps
+
+- Extract the hold logic into a testable core and add unit tests for the state
+  machine (modifier release, repeats, focus changes, commit timing).
+- Sign with a Developer ID and notarize so permission grants survive updates.
+- Add per-app hold times, and detect Secure Input to show a paused state instead
+  of silently passing ⌘Q through.
 
 ## Project structure
 
