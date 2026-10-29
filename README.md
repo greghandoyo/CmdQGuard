@@ -1,5 +1,12 @@
 # CmdQGuard
 
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/1edc735d-8fc7-48e0-b20e-8c10189ebd4f" alt="CmdQGuard Settings" width="500" style="display: block; margin: 0 auto;">
+  <p>Figure 1: CmdQGuard Settings page</p>
+</div>
+
+
+
 **Hold ⌘Q to quit. Release early to cancel.**
 
 CmdQGuard is a tiny macOS menu-bar app that turns quitting into a deliberate
