@@ -51,12 +51,11 @@ anything closes, and every unprotected app behaves exactly as before.
 
 ## Goals
 
-I built this as a learning project with a practical constraint: I wanted a tool
-I would actually keep running, not a demo.
+I built this as a learning project to have an app that can perform its function 
+consistently without having to open it each time the computer starts up.
 
 - **Ship end to end.** Menu-bar lifecycle, settings UI, permission handling,
-  login item, packaging, and documentation — the parts that separate a
-  prototype from something installable.
+  login item, packaging, and documentation. The app should be standalone.
 - **Understand a system-level macOS feature.** Event taps, TCC, synthetic
   events, and code signing are usually hidden behind frameworks. I wanted to
   know how they behave, including when they fail.
@@ -64,7 +63,7 @@ I would actually keep running, not a demo.
   capability. The app narrows it to one shortcut for an explicit whitelist,
   never records keystrokes, and contains no networking code.
 - **Build something I can explain end to end.** Design decisions, tradeoffs,
-  failure modes, and verification — not just a working binary.
+  failure modes, and verification.
 
 ## What it does
 
